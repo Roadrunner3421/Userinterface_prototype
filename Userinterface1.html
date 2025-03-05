@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Shower System - Elder Care</title>
+  <style>
+    /* Global and responsive styling with animated gradient */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradientAnimation 15s ease infinite;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      color: #333;
+    }
+    @keyframes gradientAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    header {
+      background-color: #007bff;
+      color: #fff;
+      padding: 20px;
+      font-size: 24px;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px;
+    }
+    .button {
+      background-color: #25382f;
+      border: none;
+      color: white;
+      padding: 15px 30px;
+      margin: 10px;
+      font-size: 18px;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: #0056b3;
+      transform: scale(1.05);
+    }
+    #temperature-display {
+      font-size: 28px;
+      font-weight: bold;
+      margin: 20px;
+    }
+    .status-panel {
+      margin: 20px auto;
+      padding: 20px;
+      border: 2px solid #007bff;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 600px;
+      background-color: #fff;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+    .status-panel.visible {
+      opacity: 1;
+      animation: fadeIn 0.5s forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .info-panel {
+      font-size: 20px;
+      margin: 10px;
+      padding: 10px;
+      border: 1px solid #007bff;
+      border-radius: 5px;
+      background-color: #e9f5ff;
+      display: inline-block;
+      min-width: 250px;
+    }
+
+    /* Welcome screen styles */
+    #welcome-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 123, 255, 0.95);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      animation: fadeOut 2s ease 3s forwards;
+    }
+    #welcome-message {
+      color: white;
+      font-size: 48px;
+      margin-bottom: 20px;
+      animation: scaleIn 1.5s ease;
+    }
+    #welcome-sub {
+      color: white;
+      font-size: 24px;
+      opacity: 0;
+      animation: fadeInText 1s ease 1s forwards;
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; visibility: hidden; }
+    }
+    @keyframes scaleIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    @keyframes fadeInText {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Standby mode styles */
+    #standby-mode {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 900;
+      color: white;
+    }
+    #clock {
+      font-size: 80px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    #date {
+      font-size: 30px;
+      margin-bottom: 40px;
+    }
+    #weather-info {
+      display: flex;
+      align-items: center;
+      font-size: 36px;
+      margin-bottom: 30px;
+    }
+    #weather-icon {
+      font-size: 60px;
+      margin-right: 20px;
+    }
+    #standby-temp {
+      font-size: 36px;
+      margin-bottom: 50px;
+    }
+    #tap-to-start {
+      font-size: 24px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 0.5; transform: scale(1); }
+    }
+
+    #main-interface {
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    #main-interface.active {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <!-- Welcome Screen Animation -->
+  <div id="welcome-screen">
+    <div id="welcome-message">Welcome to Smart Shower</div>
+    <div id="welcome-sub">Your personalized bathing experience</div>
+  </div>
+
+  <!-- Standby Mode -->
+  <div id="standby-mode">
+    <div id="clock">00:00:00</div>
+    <div id="date">Monday, January 1, 2025</div>
+    <div id="weather-info">
+      <div id="weather-icon">☀️</div>
+      <div id="weather-text">Sunny</div>
+    </div>
+    <div id="standby-temp">Room Temperature: 22°C</div>
+    <div id="tap-to-start">Tap anywhere to begin</div>
+  </div>
+
+  <!-- Main Interface -->
+  <div id="main-interface">
+    <header>Smart Shower System - Elder Care</header>
+    <div id="temperature-display">Temperature: 36°C</div>
+    <div class="container">
+      <button class="button" onclick="activateMode('shower')">Shower</button>
+      <button class="button" onclick="activateMode('spa')">Spa</button>
+      <button class="button" onclick="activateMode('lighting')">Lighting</button>
+      <button class="button" onclick="activateMode('steam')">Steam</button>
+      <button class="button" onclick="activateMode('music')">Music</button>
+      <button class="button" onclick="stopSystem()">Stop</button>
+      <button class="button" onclick="activateMode('health')">Health Monitoring</button>
+      <button class="button" onclick="platformRaise()">Platform Up</button>
+      <button class="button" onclick="platformLower()">Platform Down</button>
+      <button class="button" onclick="emergencyCall()">Emergency Call</button>
+    </div>
+    <div id="status" class="status-panel"></div>
+    <div class="container">
+      <div id="health-info" class="info-panel">Health: N/A</div>
+      <div id="platform-info" class="info-panel">Platform Height: 0 cm</div>
+    </div>
+  </div>
+
+  <script>
+    let currentMode = '';
+    let platformHeight = 0;
+    let temperature = 36;
+    let inactivityTimer;
+    const INACTIVITY_TIMEOUT = 60000; // 60 seconds of inactivity
+
+    // Initialize system
+    document.addEventListener('DOMContentLoaded', function() {
+      // After welcome animation completes, show standby mode
+      setTimeout(function() {
+        document.getElementById('welcome-screen').style.display = 'none';
+        enterStandbyMode();
+      }, 5000);
+
+      // Setup event listeners
+      document.getElementById('standby-mode').addEventListener('click', exitStandbyMode);
+      document.addEventListener('click', resetInactivityTimer);
+      document.addEventListener('touchstart', resetInactivityTimer);
+
+      // Initialize clock
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      // Initialize weather (simulated)
+      updateWeather();
+      setInterval(updateWeather, 300000); // Update every 5 minutes
+    });
+
+    function resetInactivityTimer() {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(enterStandbyMode, INACTIVITY_TIMEOUT);
+    }
+
+    function enterStandbyMode() {
+      document.getElementById('main-interface').classList.remove('active');
+      setTimeout(function() {
+        document.getElementById('standby-mode').style.display = 'flex';
+      }, 500);
+    }
+
+    function exitStandbyMode() {
+      document.getElementById('standby-mode').style.display = 'none';
+      document.getElementById('main-interface').classList.add('active');
+      resetInactivityTimer();
+    }
+
+    function updateClock() {
+      const now = new Date();
+
+      // Update time
+      const timeString = now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+      document.getElementById('clock').textContent = timeString;
+
+      // Update date
+      const dateString = now.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+      document.getElementById('date').textContent = dateString;
+    }
+
+    function updateWeather() {
+      // Simulated weather data (in a real app, this would come from a weather API)
+      const weatherOptions = [
+        { icon: '☀️', text: 'Sunny', temp: Math.floor(20 + Math.random() * 10) },
+        { icon: '⛅', text: 'Partly Cloudy', temp: Math.floor(18 + Math.random() * 8) },
+        { icon: '☁️', text: 'Cloudy', temp: Math.floor(15 + Math.random() * 7) },
+        { icon: '🌧️', text: 'Rainy', temp: Math.floor(12 + Math.random() * 5) },
+        { icon: '⛈️', text: 'Thunderstorm', temp: Math.floor(14 + Math.random() * 4) }
+      ];
+
+      const weather = weatherOptions[Math.floor(Math.random() * weatherOptions.length)];
+
+      document.getElementById('weather-icon').textContent = weather.icon;
+      document.getElementById('weather-text').textContent = weather.text;
+      document.getElementById('standby-temp').textContent = `Room Temperature: ${weather.temp}°C`;
+    }
+
+    function updateTemperature() {
+      temperature += (Math.random() - 0.5) * 0.2;
+      document.getElementById('temperature-display').innerText = 'Temperature: ' + temperature.toFixed(1) + '°C';
+    }
+    setInterval(updateTemperature, 2000);
+
+    function getHealthStatus() {
+      const heartRate = Math.floor(60 + Math.random() * 40);
+      const systolic = Math.floor(110 + Math.random() * 20);
+      const diastolic = Math.floor(70 + Math.random() * 10);
+      return "Heart Rate: " + heartRate + " bpm, BP: " + systolic + "/" + diastolic;
+    }
+
+    function activateMode(mode) {
+      currentMode = mode;
+      let statusMsg = "";
+      switch(mode) {
+        case 'shower':
+          statusMsg = "Shower mode activated. Water is flowing at optimal pressure.";
+          break;
+        case 'spa':
+          statusMsg = "Spa mode activated. Warm water jets and massage features enabled.";
+          break;
+        case 'lighting':
+          statusMsg = "Lighting mode activated. Ambient lighting adjusted to a soothing level.";
+          break;
+        case 'steam':
+          statusMsg = "Steam mode activated. Generating gentle, therapeutic steam.";
+          break;
+        case 'music':
+          statusMsg = "Music mode activated. Playing relaxing, elder-friendly tunes.";
+          break;
+        case 'health':
+          statusMsg = "Health monitoring activated. " + getHealthStatus();
+          document.getElementById('health-info').innerText = getHealthStatus();
+          break;
+        default:
+          statusMsg = "Unknown mode.";
+          break;
+      }
+      showStatus(statusMsg);
+      resetInactivityTimer();
+    }
+
+    function stopSystem() {
+      currentMode = '';
+      showStatus("System stopped. All active modes have been deactivated.");
+      resetInactivityTimer();
+    }
+
+    function platformRaise() {
+      platformHeight += 5;
+      document.getElementById('platform-info').innerText = "Platform Height: " + platformHeight + " cm";
+      showStatus("Platform raised. Current height: " + platformHeight + " cm.");
+      resetInactivityTimer();
+    }
+
+    function platformLower() {
+      platformHeight = Math.max(0, platformHeight - 5);
+      document.getElementById('platform-info').innerText = "Platform Height: " + platformHeight + " cm";
+      showStatus("Platform lowered. Current height: " + platformHeight + " cm.");
+      resetInactivityTimer();
+    }
+
+    function emergencyCall() {
+      showStatus("Emergency call activated. Notifying family members and emergency contacts...");
+      setTimeout(function(){
+        alert("Emergency message sent to family!");
+      }, 500);
+      resetInactivityTimer();
+    }
+
+    function showStatus(message) {
+      const statusPanel = document.getElementById("status");
+      statusPanel.innerText = message;
+      statusPanel.classList.remove("visible");
+      void statusPanel.offsetWidth;
+      statusPanel.classList.add("visible");
+    }
+  </script>
+</body>
+</html>
